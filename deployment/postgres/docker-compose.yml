@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+
+  db:
+    container_name: postgres
+    hostname: postgres
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: abc123
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - db
+
+networks:
+  db:
+    external: true

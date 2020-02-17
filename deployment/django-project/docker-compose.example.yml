@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  web-application:
+    container_name: web-application
+    image: CONTAINER:NAME
+    restart: always
+    env_file: env
+    networks:
+      - traefik
+      - db
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.example.rule=Host(`example.com`,`www.example.com`)
+      - traefik.http.routers.example.tls=true
+      - traefik.http.routers.example.tls.certresolver=le
+      - traefik.http.services.example.loadbalancer.server.port=8000
+
+      # Redirect non-www to www middleware
+      - traefik.http.middlewares.example-nonwww.redirectregex.regex=^https://example.com/(.*)
+      - traefik.http.middlewares.example-nonwww.redirectregex.replacement=https://www.example.com/$${1}
+      - traefik.http.middlewares.example-nonwww.redirectregex.permanent=true
+
+      # Adjust these as needed
+      - "traefik.http.middlewares.example-ratelimit.ratelimit.average=10"
+      - "traefik.http.middlewares.example-ratelimit.ratelimit.burst=20"
+
+      - traefik.http.routers.example.middlewares=example-nonwww@docker,gzip@docker,example-ratelimit@docker
+
+networks:
+  traefik:
+    external: true
+  db:
+    external: true
