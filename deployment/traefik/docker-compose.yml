@@ -29,11 +29,13 @@ services:
             - 443:443
         networks:
             - traefik
+
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - ./acme.json:/acme.json
             - ./traefik_conf.yml:/traefik_conf.yml:ro
             - ./logs:/logs
+
         labels:
 
             # Redirect all HTTP to HTTPS permanently
@@ -45,6 +47,15 @@ services:
 
             # gzip all responses
             - traefik.http.middlewares.gzip.compress=true
+
+            # Adding in secure headers
+            - traefik.http.middlewares.securedheaders.headers.forcestsheader=true
+            - traefik.http.middlewares.securedheaders.headers.sslRedirect=true
+            - traefik.http.middlewares.securedheaders.headers.STSPreload=true
+            - traefik.http.middlewares.securedheaders.headers.ContentTypeNosniff=true
+            - traefik.http.middlewares.securedheaders.headers.BrowserXssFilter=true
+            - traefik.http.middlewares.securedheaders.headers.STSIncludeSubdomains=true
+            - traefik.http.middlewares.securedheaders.headers.STSSeconds=315360000
 
 networks:
     traefik:
