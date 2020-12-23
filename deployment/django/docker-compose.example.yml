@@ -1,9 +1,10 @@
 version: "3"
 
 services:
-  web-application:
-    container_name: web-application
-    image: CONTAINER:NAME
+
+  django:
+    container_name: django
+    image: django
     restart: always
     env_file: env
     networks:

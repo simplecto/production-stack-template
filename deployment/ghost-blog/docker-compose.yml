@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+
+#    filebrowser:
+#        image: filebrowser/filebrowser
+#        container_name: filebrowser
+#        restart: unless-stopped
+#
+#        volumes:
+#            - ./files:/srv
+#            - ./database.db:/database.db
+#            - ./filebrowser.json:/.filebrowser.json
+#        networks:
+#            - traefik
+#        labels:
+#            # traefik 2 config
+#            - traefik.http.routers.filebrowser.rule=Host(`files.example.com`)
+#            - traefik.http.routers.filebrowser.tls=true
+#            - traefik.http.routers.filebrowser.tls.certresolver=le
+#            - traefik.http.services.filebrowser.loadbalancer.server.port=80
+#            - traefik.http.routers.filebrowser.middlewares=gzip@docker
+
+    nginx:
+        image: nginx
+        container_name: nginx
+        restart: unless-stopped
+        volumes:
+            - ./files:/usr/share/nginx/html:ro
+        networks:
+            - traefik
+        labels:
+            # traefik 2 config
+            - traefik.http.routers.nginx.rule=(Host(`blog.example.com`) && Path(`/static`))
+            - traefik.http.routers.nginx.tls=true
+            - traefik.http.routers.nginx.tls.certresolver=le
+            - traefik.http.services.nginx.loadbalancer.server.port=80
+
+            # Define a new middleware to strip the URL prefix before sending it to nginx
+            - traefik.http.middlewares.nginx-stripprefix.stripprefix.prefixes=/static
+
+            # tell Traefik which middlewares we want to use on this container
+            - traefik.http.routers.nginx.middlewares=gzip@docker,nginx-stripprefix@docker
+
+
+    ghost:
+        image: ghost:3-alpine
+        container_name: example
+        restart: unless-stopped
+        volumes:
+            - "./ghostdata:/var/lib/ghost/content"
+
+        environment:
+            url: https://www.example.com
+            mail__transport: SMTP
+            mail__options__host: smtp.sendgrid.net
+            mail__options__port: 465
+            mail__options__secureConnection: "true"
+            mail__options__auth__user: apikey
+            mail__options__auth__pass: YOUR_API_KEY
+            mail__from: no-reply@example.com
+
+        networks:
+            - traefik
+
+        labels:
+            # traefik 2 config
+            - traefik.http.routers.example.rule=Host(`blog.example.com`)
+            - traefik.http.routers.example.tls=true
+            - traefik.http.routers.example.tls.certresolver=le
+            - traefik.http.services.example.loadbalancer.server.port=2368
+
+            # Redirect non-www to www middleware
+            - traefik.http.middlewares.example-nonwww.redirectregex.regex=^https://example.com/(.*)
+            - traefik.http.middlewares.example-nonwww.redirectregex.replacement=https://www.example.com/$${1}
+            - traefik.http.middlewares.example-nonwww.redirectregex.permanent=true
+
+            - traefik.http.routers.example.middlewares=gzip@docker,secureheaders@docker,example-nonwww@docker
+
+networks:
+    traefik:
+        external: true
