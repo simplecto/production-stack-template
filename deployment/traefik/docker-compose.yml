@@ -4,7 +4,7 @@ services:
 
     traefik:
         container_name: traefik
-        image: traefik:v2.1
+        image: traefik:v2.3
         command:
             - "--providers.docker=true"
             - "--providers.docker.network=traefik"
@@ -56,6 +56,9 @@ services:
             - traefik.http.middlewares.securedheaders.headers.BrowserXssFilter=true
             - traefik.http.middlewares.securedheaders.headers.STSIncludeSubdomains=true
             - traefik.http.middlewares.securedheaders.headers.STSSeconds=315360000
+            - traefik.http.middlewares.securedheaders.headers.frameDeny=true
+            - traefik.http.middlewares.securedheaders.headers.browserXssFilter=true
+            - traefik.http.middlewares.securedheaders.headers.contentTypeNosniff=true
 
 networks:
     traefik:
