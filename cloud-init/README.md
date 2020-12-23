@@ -8,8 +8,6 @@ For my purposes it should:
 
   * update the base operating system
   * install docker
-  * configure docker to listen on TCP port 2375
-  * install zerotier and join my private network
+  * install ZeroTier and join my private network
   * install docker-compose
   * install other nice-to-haves for admin purposes
-  
