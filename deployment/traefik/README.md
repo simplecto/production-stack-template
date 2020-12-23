@@ -48,11 +48,17 @@ encryption and protocols--am I right?"
 
 Well, just in case you have to support older OS/Browser configurations you can 
 disable this. Simply remove the volume bind-mount in the `docker-compose.yml`
-file and the command line option `- "--providers.file.filename=/traefik_conf.yml"
-`
+file and the command line option `- "--providers.file.filename=/traefik_conf.yml"`
 
-I wrote more extensively about this here in my blog, [Improve Traefik's HTTPS Encryption with Qualys SSL Labs and testssl.sh](https://www.simplecto.com/improve-traefik-https-encryption-qualys-ssl-labs-testssl-sh/)
+I wrote more extensively about this here in my blog, [Improve Traefik's HTTPS Encryption with Qualys SSL Labs and testssl.sh](https://www.example.com/improve-traefik-https-encryption-qualys-ssl-labs-testssl-sh/)
 
+## Logging
+You will notice in the `docker-compose.yml` file that logs are dumped to a 
+local folder. We do this for two reasons:
+
+  1. Logs are easier to view, should we need it
+  2. This prevents the container logs from filling up on the host machine.
+  
 ## Risk and Gaps
 
 Please see [Risks and Gaps](RISK_ANALYSIS.md)

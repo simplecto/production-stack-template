@@ -1,18 +1,22 @@
 # Purpose
 
-This is a general template that I use for every new project.
-If you follow my blog (simplecto.com) then you will know that
-I am a big believer in Django and a supporting ecosystem around
-that framework.
+This is a project template that provides a production-ready reference 
+implementation for commonly used features: 
 
-Principles
+  * Reverse-proxy with automatic HTTPS encryption via LetsEncrypt 
+
+If you follow [my blog](https://www.example.com) then you will know that
+I am a big believer in Django and a supporting ecosystem around
+that framework. 
+
+**Principles**
   * 12-factor ready
   * Simplicity, with a path forward for scaling the parts you need.
   * Single developer friendly
   * Single machine friendly
   * Optimize for developer speed
 
-Docker
+**Docker**
   * building and running locally
   * building and running remotely
   * pushing to private repo
@@ -20,12 +24,10 @@ Docker
   * docker-compose production
     * with docker labels
     
-
-Django
+**Django**
   * my patterns for config/ folder
   * pickup environment vars from `.env` in `settings.py` file
   * support libraries (see blog)
-  * 
 
 Minimal Javascript (because I dont like it)
   * This is a personal thing. 
@@ -53,6 +55,4 @@ Video / instructions on how to setup pycharms with screenshots
 Patterns
 
   * Skip celery. Use a database and django commands as reliable, robust, and easily understood workers
-    * their work would become indepotend
-    
-  
+    * their work would be idempotent, which means that repeat processes will not break things
